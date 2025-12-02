@@ -11,7 +11,8 @@ import {
   ArrowLeft, 
   ArrowRight, 
   Dumbbell,
-  CheckCircle2
+  CheckCircle2,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -54,7 +55,6 @@ export default function DiagnosticoPage() {
     if (step < totalSteps) {
       setStep(step + 1);
     } else {
-      // Salvar dados e redirecionar para dashboard
       localStorage.setItem("vibefit_user", JSON.stringify(formData));
       router.push("/dashboard");
     }
@@ -82,15 +82,25 @@ export default function DiagnosticoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-[#0A0A0F] relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute top-40 right-0 w-96 h-96 bg-pink-500/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px] animate-pulse delay-2000"></div>
+      </div>
+
       {/* Header */}
-      <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+      <header className="relative border-b border-white/5 bg-[#0A0A0F]/60 backdrop-blur-xl">
         <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center">
-              <Dumbbell className="w-6 h-6 text-white" />
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75"></div>
+              <div className="relative w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-2xl flex items-center justify-center">
+                <Dumbbell className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
               Vibe Fit
             </span>
           </Link>
@@ -98,76 +108,84 @@ export default function DiagnosticoPage() {
       </header>
 
       {/* Progress Bar */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="relative container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-400">Passo {step} de {totalSteps}</span>
-            <span className="text-sm text-gray-400">{Math.round(progress)}%</span>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-gray-400 font-semibold">Passo {step} de {totalSteps}</span>
+            <span className="text-sm text-white font-bold">{Math.round(progress)}%</span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-3" />
         </div>
       </div>
 
       {/* Form Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="relative container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Card className="bg-slate-900/50 border-slate-800">
-            <CardHeader>
-              <CardTitle className="text-2xl text-white">
+          <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10">
+            <div className="mb-8">
+              <h2 className="text-3xl font-black text-white mb-2">
                 {step === 1 && "Informações Básicas"}
                 {step === 2 && "Qual é o seu objetivo?"}
                 {step === 3 && "Qual é o seu nível atual?"}
                 {step === 4 && "Onde você vai treinar?"}
                 {step === 5 && "Disponibilidade de Tempo"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
+              </h2>
+              <p className="text-gray-400">
+                {step === 1 && "Vamos começar conhecendo você melhor"}
+                {step === 2 && "Escolha o que melhor descreve sua meta"}
+                {step === 3 && "Seja honesto para termos os melhores resultados"}
+                {step === 4 && "Vamos adaptar os treinos ao seu ambiente"}
+                {step === 5 && "Quanto tempo você pode dedicar?"}
+              </p>
+            </div>
+
+            <div className="space-y-6">
               {/* Step 1: Informações Básicas */}
               {step === 1 && (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <Label htmlFor="nome" className="text-gray-300">Nome completo</Label>
+                    <Label htmlFor="nome" className="text-gray-300 font-semibold mb-2 block">Nome completo</Label>
                     <Input
                       id="nome"
                       value={formData.nome}
                       onChange={(e) => updateFormData("nome", e.target.value)}
                       placeholder="Seu nome"
-                      className="bg-slate-800 border-slate-700 text-white mt-2"
+                      className="bg-white/5 border-white/10 text-white h-14 text-lg font-medium"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="idade" className="text-gray-300">Idade</Label>
+                      <Label htmlFor="idade" className="text-gray-300 font-semibold mb-2 block">Idade</Label>
                       <Input
                         id="idade"
                         type="number"
                         value={formData.idade}
                         onChange={(e) => updateFormData("idade", e.target.value)}
                         placeholder="Ex: 30"
-                        className="bg-slate-800 border-slate-700 text-white mt-2"
+                        className="bg-white/5 border-white/10 text-white h-14 text-lg font-medium"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="peso" className="text-gray-300">Peso (kg)</Label>
+                      <Label htmlFor="peso" className="text-gray-300 font-semibold mb-2 block">Peso (kg)</Label>
                       <Input
                         id="peso"
                         type="number"
                         value={formData.peso}
                         onChange={(e) => updateFormData("peso", e.target.value)}
                         placeholder="Ex: 75"
-                        className="bg-slate-800 border-slate-700 text-white mt-2"
+                        className="bg-white/5 border-white/10 text-white h-14 text-lg font-medium"
                       />
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="altura" className="text-gray-300">Altura (cm)</Label>
+                    <Label htmlFor="altura" className="text-gray-300 font-semibold mb-2 block">Altura (cm)</Label>
                     <Input
                       id="altura"
                       type="number"
                       value={formData.altura}
                       onChange={(e) => updateFormData("altura", e.target.value)}
                       placeholder="Ex: 170"
-                      className="bg-slate-800 border-slate-700 text-white mt-2"
+                      className="bg-white/5 border-white/10 text-white h-14 text-lg font-medium"
                     />
                   </div>
                 </div>
@@ -176,19 +194,32 @@ export default function DiagnosticoPage() {
               {/* Step 2: Objetivo */}
               {step === 2 && (
                 <RadioGroup value={formData.objetivo} onValueChange={(value) => updateFormData("objetivo", value)}>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {[
                       { value: "emagrecer", label: "Emagrecer e perder gordura", emoji: "🔥" },
                       { value: "tonificar", label: "Tonificar e definir músculos", emoji: "💪" },
                       { value: "ganhar", label: "Ganhar massa muscular", emoji: "🏋️" },
                       { value: "saude", label: "Melhorar saúde e condicionamento", emoji: "❤️" }
                     ].map((option) => (
-                      <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border border-slate-700 hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-800/50">
-                        <RadioGroupItem value={option.value} id={option.value} />
-                        <Label htmlFor={option.value} className="flex-1 cursor-pointer text-white">
-                          <span className="mr-2">{option.emoji}</span>
-                          {option.label}
-                        </Label>
+                      <div key={option.value} className="group relative">
+                        <input
+                          type="radio"
+                          id={option.value}
+                          value={option.value}
+                          checked={formData.objetivo === option.value}
+                          onChange={(e) => updateFormData("objetivo", e.target.value)}
+                          className="peer sr-only"
+                        />
+                        <label
+                          htmlFor={option.value}
+                          className="flex items-center gap-4 p-6 rounded-2xl border-2 border-white/10 bg-white/5 cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-purple-500/50 peer-checked:border-purple-500 peer-checked:bg-gradient-to-r peer-checked:from-purple-500/10 peer-checked:to-pink-500/10"
+                        >
+                          <span className="text-4xl">{option.emoji}</span>
+                          <span className="text-white font-bold text-lg flex-1">{option.label}</span>
+                          {formData.objetivo === option.value && (
+                            <CheckCircle2 className="w-6 h-6 text-purple-400" />
+                          )}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -198,18 +229,33 @@ export default function DiagnosticoPage() {
               {/* Step 3: Nível */}
               {step === 3 && (
                 <RadioGroup value={formData.nivel} onValueChange={(value) => updateFormData("nivel", value)}>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {[
                       { value: "iniciante", label: "Iniciante", desc: "Nunca treinei ou parei há muito tempo" },
                       { value: "intermediario", label: "Intermediário", desc: "Treino há alguns meses" },
                       { value: "avancado", label: "Avançado", desc: "Treino regularmente há mais de 1 ano" }
                     ].map((option) => (
-                      <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border border-slate-700 hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-800/50">
-                        <RadioGroupItem value={option.value} id={option.value} />
-                        <Label htmlFor={option.value} className="flex-1 cursor-pointer">
-                          <div className="text-white font-medium">{option.label}</div>
-                          <div className="text-sm text-gray-400">{option.desc}</div>
-                        </Label>
+                      <div key={option.value} className="group relative">
+                        <input
+                          type="radio"
+                          id={option.value}
+                          value={option.value}
+                          checked={formData.nivel === option.value}
+                          onChange={(e) => updateFormData("nivel", e.target.value)}
+                          className="peer sr-only"
+                        />
+                        <label
+                          htmlFor={option.value}
+                          className="flex items-center gap-4 p-6 rounded-2xl border-2 border-white/10 bg-white/5 cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-purple-500/50 peer-checked:border-purple-500 peer-checked:bg-gradient-to-r peer-checked:from-purple-500/10 peer-checked:to-pink-500/10"
+                        >
+                          <div className="flex-1">
+                            <div className="text-white font-bold text-lg mb-1">{option.label}</div>
+                            <div className="text-sm text-gray-400">{option.desc}</div>
+                          </div>
+                          {formData.nivel === option.value && (
+                            <CheckCircle2 className="w-6 h-6 text-purple-400" />
+                          )}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -219,21 +265,34 @@ export default function DiagnosticoPage() {
               {/* Step 4: Local */}
               {step === 4 && (
                 <RadioGroup value={formData.local} onValueChange={(value) => updateFormData("local", value)}>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {[
                       { value: "casa", label: "Em casa", desc: "Sem ou com poucos equipamentos", emoji: "🏠" },
                       { value: "academia", label: "Na academia", desc: "Acesso completo a equipamentos", emoji: "🏋️" },
                       { value: "ambos", label: "Ambos", desc: "Flexibilidade para treinar onde quiser", emoji: "🔄" }
                     ].map((option) => (
-                      <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border border-slate-700 hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-800/50">
-                        <RadioGroupItem value={option.value} id={option.value} />
-                        <Label htmlFor={option.value} className="flex-1 cursor-pointer">
-                          <div className="text-white font-medium">
-                            <span className="mr-2">{option.emoji}</span>
-                            {option.label}
+                      <div key={option.value} className="group relative">
+                        <input
+                          type="radio"
+                          id={option.value}
+                          value={option.value}
+                          checked={formData.local === option.value}
+                          onChange={(e) => updateFormData("local", e.target.value)}
+                          className="peer sr-only"
+                        />
+                        <label
+                          htmlFor={option.value}
+                          className="flex items-center gap-4 p-6 rounded-2xl border-2 border-white/10 bg-white/5 cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-purple-500/50 peer-checked:border-purple-500 peer-checked:bg-gradient-to-r peer-checked:from-purple-500/10 peer-checked:to-pink-500/10"
+                        >
+                          <span className="text-4xl">{option.emoji}</span>
+                          <div className="flex-1">
+                            <div className="text-white font-bold text-lg mb-1">{option.label}</div>
+                            <div className="text-sm text-gray-400">{option.desc}</div>
                           </div>
-                          <div className="text-sm text-gray-400">{option.desc}</div>
-                        </Label>
+                          {formData.local === option.value && (
+                            <CheckCircle2 className="w-6 h-6 text-purple-400" />
+                          )}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -242,9 +301,9 @@ export default function DiagnosticoPage() {
 
               {/* Step 5: Tempo */}
               {step === 5 && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <Label className="text-gray-300 mb-3 block">Quanto tempo você tem por treino?</Label>
+                    <Label className="text-gray-300 font-semibold mb-4 block text-lg">Quanto tempo você tem por treino?</Label>
                     <RadioGroup value={formData.tempo} onValueChange={(value) => updateFormData("tempo", value)}>
                       <div className="space-y-3">
                         {[
@@ -253,11 +312,24 @@ export default function DiagnosticoPage() {
                           { value: "40", label: "40 minutos" },
                           { value: "60", label: "60 minutos ou mais" }
                         ].map((option) => (
-                          <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border border-slate-700 hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-800/50">
-                            <RadioGroupItem value={option.value} id={`tempo-${option.value}`} />
-                            <Label htmlFor={`tempo-${option.value}`} className="flex-1 cursor-pointer text-white">
-                              {option.label}
-                            </Label>
+                          <div key={option.value} className="group relative">
+                            <input
+                              type="radio"
+                              id={`tempo-${option.value}`}
+                              value={option.value}
+                              checked={formData.tempo === option.value}
+                              onChange={(e) => updateFormData("tempo", e.target.value)}
+                              className="peer sr-only"
+                            />
+                            <label
+                              htmlFor={`tempo-${option.value}`}
+                              className="flex items-center justify-between p-5 rounded-2xl border-2 border-white/10 bg-white/5 cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-purple-500/50 peer-checked:border-purple-500 peer-checked:bg-gradient-to-r peer-checked:from-purple-500/10 peer-checked:to-pink-500/10"
+                            >
+                              <span className="text-white font-bold">{option.label}</span>
+                              {formData.tempo === option.value && (
+                                <CheckCircle2 className="w-6 h-6 text-purple-400" />
+                              )}
+                            </label>
                           </div>
                         ))}
                       </div>
@@ -265,7 +337,7 @@ export default function DiagnosticoPage() {
                   </div>
 
                   <div>
-                    <Label className="text-gray-300 mb-3 block">Quantos dias por semana você pode treinar?</Label>
+                    <Label className="text-gray-300 font-semibold mb-4 block text-lg">Quantos dias por semana você pode treinar?</Label>
                     <RadioGroup value={formData.frequencia} onValueChange={(value) => updateFormData("frequencia", value)}>
                       <div className="space-y-3">
                         {[
@@ -274,11 +346,24 @@ export default function DiagnosticoPage() {
                           { value: "5", label: "5 dias por semana" },
                           { value: "6", label: "6 ou mais dias por semana" }
                         ].map((option) => (
-                          <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border border-slate-700 hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-800/50">
-                            <RadioGroupItem value={option.value} id={`freq-${option.value}`} />
-                            <Label htmlFor={`freq-${option.value}`} className="flex-1 cursor-pointer text-white">
-                              {option.label}
-                            </Label>
+                          <div key={option.value} className="group relative">
+                            <input
+                              type="radio"
+                              id={`freq-${option.value}`}
+                              value={option.value}
+                              checked={formData.frequencia === option.value}
+                              onChange={(e) => updateFormData("frequencia", e.target.value)}
+                              className="peer sr-only"
+                            />
+                            <label
+                              htmlFor={`freq-${option.value}`}
+                              className="flex items-center justify-between p-5 rounded-2xl border-2 border-white/10 bg-white/5 cursor-pointer transition-all duration-300 hover:bg-white/10 hover:border-purple-500/50 peer-checked:border-purple-500 peer-checked:bg-gradient-to-r peer-checked:from-purple-500/10 peer-checked:to-pink-500/10"
+                            >
+                              <span className="text-white font-bold">{option.label}</span>
+                              {formData.frequencia === option.value && (
+                                <CheckCircle2 className="w-6 h-6 text-purple-400" />
+                              )}
+                            </label>
                           </div>
                         ))}
                       </div>
@@ -288,37 +373,37 @@ export default function DiagnosticoPage() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex gap-4 pt-6">
+              <div className="flex gap-4 pt-8">
                 {step > 1 && (
                   <Button
                     variant="outline"
                     onClick={prevStep}
-                    className="flex-1 border-slate-700 text-gray-300 hover:bg-slate-800"
+                    className="flex-1 border-2 border-white/10 bg-white/5 text-white hover:bg-white/10 h-14 font-bold"
                   >
-                    <ArrowLeft className="mr-2 w-4 h-4" />
+                    <ArrowLeft className="mr-2 w-5 h-5" />
                     Voltar
                   </Button>
                 )}
                 <Button
                   onClick={nextStep}
                   disabled={!canProceed()}
-                  className="flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] text-white h-14 font-black disabled:opacity-50 transition-all duration-300 hover:scale-105"
                 >
                   {step === totalSteps ? (
                     <>
-                      <CheckCircle2 className="mr-2 w-4 h-4" />
+                      <Zap className="mr-2 w-5 h-5" />
                       Gerar Meu Plano
                     </>
                   ) : (
                     <>
                       Próximo
-                      <ArrowRight className="ml-2 w-4 h-4" />
+                      <ArrowRight className="ml-2 w-5 h-5" />
                     </>
                   )}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
